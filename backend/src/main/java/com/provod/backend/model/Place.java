@@ -25,11 +25,11 @@ public class Place
     private Integer standardCapacity;
     private Integer vipCapacity;
     private Integer rating;
-    // should be image compatible data type
+    //TODO poster should be image compatible data type
     private String placePoster;
-    @OneToMany(mappedBy = "place")
+    @OneToMany(mappedBy = "place", orphanRemoval = true)
     private List<Event> events;
-    @OneToMany(mappedBy = "place")
+    @OneToMany(mappedBy = "place", orphanRemoval = true)
     private List<PlaceOwner> owners;
 
     public Place(String name, String description, String address, String city, Integer latitude, Integer longitude, Integer standardCapacity, Integer vipCapacity)

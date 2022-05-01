@@ -1,6 +1,7 @@
 package com.provod.backend.repository.jpa;
 
 import com.provod.backend.model.Event;
+import com.provod.backend.model.Place;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +18,8 @@ public interface EventRepository extends JpaRepository<Event, Long>
     List<Event> findAllByStartAfter(LocalDateTime after);
 
     List<Event> findAllByStartBetween(LocalDateTime from, LocalDateTime to);
+
+    Optional<Event> findByPlaceAndStartBetween(Place place, LocalDateTime from, LocalDateTime to);
 
     @EntityGraph(type = EntityGraph.EntityGraphType.LOAD,
             attributePaths = {"reservations"})

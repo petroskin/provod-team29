@@ -1,5 +1,6 @@
 package com.provod.backend.model;
 
+import com.provod.backend.model.enums.UserRole;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,9 +22,11 @@ public class User
     private String email;
     private String phone;
     private String password;
-    @OneToMany(mappedBy = "owner")
+    @Enumerated(value = EnumType.STRING)
+    private UserRole role;
+    @OneToMany(mappedBy = "owner", orphanRemoval = true)
     private List<PlaceOwner> placesOwned;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Reservation> reservations;
 
     public User(String name, String email, String phone, String password)
@@ -32,5 +35,6 @@ public class User
         this.email = email;
         this.phone = phone;
         this.password = password;
+        this.role = UserRole.Standard;
     }
 }

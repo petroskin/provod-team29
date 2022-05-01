@@ -8,9 +8,18 @@ import java.util.List;
 
 public interface PlaceService
 {
-    Place createPlace(Place place);
+    //TODO poster should be image compatible data type
+    Place createPlace(String name,
+                      String description,
+                      String address,
+                      String city,
+                      Integer latitude,
+                      Integer longitude,
+                      Integer standardCapacity,
+                      Integer vipCapacity,
+                      String placePoster);
     Place updatePlace(Place place);
-    Place removePlace(Place place);
+    Boolean removePlace(Long id);
     Place getPlace(Long id);
     Place getPlaceWithEvents(Long id);
     Place getPlaceWithOwners(Long id);
@@ -20,5 +29,5 @@ public interface PlaceService
     List<Place> searchPlaceByRatingGreaterEqual(Integer rating);
     List<Place> searchPlaceByRatingLessEqual(Integer rating);
     PlaceOwner addPlaceOwner(Place place, User owner);
-    PlaceOwner removePlaceOwner(Place place, User owner);
+    Boolean removePlaceOwner(Long id);
 }

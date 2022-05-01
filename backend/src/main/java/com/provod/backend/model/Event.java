@@ -20,9 +20,9 @@ public class Event
     private LocalDateTime start;
     @ManyToOne
     private Place place;
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "event", orphanRemoval = true)
     private List<Reservation> reservations;
-    // should be image compatible data type
+    //TODO poster should be image compatible data type
     private String eventPoster;
 
     public Event(LocalDateTime start, Place place)

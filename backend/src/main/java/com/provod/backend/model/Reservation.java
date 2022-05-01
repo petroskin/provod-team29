@@ -22,4 +22,11 @@ public class Reservation
     private Event event;
     @Enumerated(value = EnumType.STRING)
     private TableType tableType;
+
+    public Reservation(User user, Event event, TableType tableType)
+    {
+        this.user = user;
+        this.event = event;
+        this.tableType = tableType;
+    }
 }
