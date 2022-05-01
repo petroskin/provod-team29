@@ -14,12 +14,15 @@ import java.util.Optional;
 public interface PlaceRepository extends JpaRepository<Place, Long>
 {
     List<Place> findAllByNameLike(String placeName);
+
     List<Place> findAllByCityLike(String cityName);
+
     List<Place> findAllByRatingGreaterThanEqual(Integer rating);
+
     List<Place> findAllByRatingLessThanEqual(Integer rating);
 
     @EntityGraph(type = EntityGraph.EntityGraphType.LOAD,
-    attributePaths = {"events"})
+            attributePaths = {"events"})
     @Query("select p from Place p where p.id = :id")
     Optional<Place> findByIdWithEvents(@Param("id") Long id);
 
@@ -29,12 +32,7 @@ public interface PlaceRepository extends JpaRepository<Place, Long>
     Optional<Place> findByIdWithOwners(@Param("id") Long id);
 
     @EntityGraph(type = EntityGraph.EntityGraphType.LOAD,
-            attributePaths = {"events"})
+            attributePaths = {"events", "owners"})
     @Query("select p from Place p where p.id = :id")
-    Place getByIdWithEvents(@Param("id") Long id);
-
-    @EntityGraph(type = EntityGraph.EntityGraphType.LOAD,
-            attributePaths = {"owners"})
-    @Query("select p from Place p where p.id = :id")
-    Place getByIdWithOwners(@Param("id") Long id);
+    Optional<Place> findByIdWithEventsAndOwners(@Param("id") Long id);
 }

@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long>
 {
     Optional<User> findByEmail(String email);
+
     User getByEmail(String email);
 
     @EntityGraph(type = EntityGraph.EntityGraphType.LOAD,
@@ -24,14 +25,4 @@ public interface UserRepository extends JpaRepository<User, Long>
             attributePaths = {"reservations"})
     @Query("select u from User u where u.id = :id")
     Optional<User> findByIdWithReservations(@Param("id") Long id);
-
-    @EntityGraph(type = EntityGraph.EntityGraphType.LOAD,
-            attributePaths = {"placesOwned"})
-    @Query("select u from User u where u.id = :id")
-    User getByIdWithPlacesOwned(@Param("id") Long id);
-
-    @EntityGraph(type = EntityGraph.EntityGraphType.LOAD,
-            attributePaths = {"reservations"})
-    @Query("select u from User u where u.id = :id")
-    User getByIdWithReservations(@Param("id") Long id);
 }
