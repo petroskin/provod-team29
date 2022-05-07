@@ -22,8 +22,6 @@ public class Event
     private Place place;
     @OneToMany(mappedBy = "event", orphanRemoval = true)
     private List<Reservation> reservations;
-    //TODO poster should be image compatible data type
-    private String eventPoster;
 
     public Event(LocalDateTime start, Place place)
     {

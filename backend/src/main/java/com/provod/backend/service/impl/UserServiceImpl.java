@@ -7,26 +7,25 @@ import com.provod.backend.model.exceptions.InvalidFieldException;
 import com.provod.backend.model.exceptions.PhoneNumberTakenException;
 import com.provod.backend.repository.jpa.UserRepository;
 import com.provod.backend.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService
 {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder)
-    {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public User registerUser(String name, String email, String phone, String password)
