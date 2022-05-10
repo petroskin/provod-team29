@@ -9,6 +9,9 @@ import com.provod.backend.repository.jpa.ReservationRepository;
 import com.provod.backend.service.ReservationService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class ReservationServiceImpl implements ReservationService
 {
@@ -34,5 +37,17 @@ public class ReservationServiceImpl implements ReservationService
         reservationRepository.deleteById(id);
         reservationRepository.flush();
         return !reservationRepository.existsById(id);
+    }
+
+    @Override
+    public List<Reservation> getReservationByUser(User user) {
+
+        Optional<List<Reservation>> opt = this.reservationRepository.findByUserId(user.getId());
+        return opt.orElseGet(List::of);
+    }
+
+    @Override
+    public Reservation getReservationById(Long id) {
+        return this.reservationRepository.getById(id);
     }
 }

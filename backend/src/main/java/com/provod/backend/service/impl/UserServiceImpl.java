@@ -9,6 +9,7 @@ import com.provod.backend.repository.jpa.UserRepository;
 import com.provod.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -128,4 +129,16 @@ public class UserServiceImpl implements UserService
         if (userRepository.findByPhone(phone).isPresent())
             throw new PhoneNumberTakenException();
     }
+
+    @Override
+    public User getCurrentUser() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        String username = userDetails.getUsername();
+        User user = userRepository.getByEmail(username);
+
+        return user;
+    }
+
+
 }

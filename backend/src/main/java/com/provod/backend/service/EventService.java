@@ -14,6 +14,7 @@ public interface EventService
     Boolean removeEvent(Long id);
     Event getEvent(Long id);
     Event getEventWithReservations(Long id);
+    List<Event> getAllEvents();
     List<Event> searchEventByStartAfter(LocalDateTime after);
     List<Event> searchEventByStartBetween(LocalDateTime from, LocalDateTime to);
 }

@@ -70,6 +70,11 @@ public class EventServiceImpl implements EventService
     }
 
     @Override
+    public List<Event> getAllEvents() {
+        return this.eventRepository.findAll();
+    }
+
+    @Override
     public List<Event> searchEventByStartAfter(LocalDateTime after)
     {
         return eventRepository.findAllByStartAfter(after);

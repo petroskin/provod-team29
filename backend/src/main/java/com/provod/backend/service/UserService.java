@@ -13,4 +13,5 @@ public interface UserService extends UserDetailsService
     User getUserWithReservations(Long id);
     User updateUser(User user);
     User setUserRole(User user, UserRole role);
+    User getCurrentUser();
 }
