@@ -1,5 +1,6 @@
 package com.provod.backend.model;
 
+import com.provod.backend.model.DTOs.EventDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,5 +28,13 @@ public class Event
     {
         this.start = start;
         this.place = place;
+    }
+
+    public static EventDTO convertToDTO(Event event){
+        return EventDTO.builder()
+                .id(event.getId())
+                .start(event.getStart())
+                .placeId(event.getPlace().getId())
+                .build();
     }
 }

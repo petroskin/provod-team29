@@ -1,5 +1,6 @@
 package com.provod.backend.model;
 
+import com.provod.backend.model.DTOs.ReservationDTO;
 import com.provod.backend.model.enums.TableType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,5 +29,14 @@ public class Reservation
         this.user = user;
         this.event = event;
         this.tableType = tableType;
+    }
+
+    public static ReservationDTO convertToDTO(Reservation reservation){
+        return ReservationDTO.builder()
+                .id(reservation.getId())
+                .userId(reservation.getUser().getId())
+                .eventId(reservation.getEvent().getId())
+                .tableType(reservation.getTableType())
+                .build();
     }
 }

@@ -130,15 +130,5 @@ public class UserServiceImpl implements UserService
             throw new PhoneNumberTakenException();
     }
 
-    @Override
-    public User getCurrentUser() {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        String username = userDetails.getUsername();
-        User user = userRepository.getByEmail(username);
-
-        return user;
-    }
-
 
 }

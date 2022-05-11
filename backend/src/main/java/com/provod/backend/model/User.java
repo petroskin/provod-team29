@@ -1,5 +1,6 @@
 package com.provod.backend.model;
 
+import com.provod.backend.model.DTOs.UserDTO;
 import com.provod.backend.model.enums.UserRole;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -36,5 +38,20 @@ public class User
         this.phone = phone;
         this.password = password;
         this.role = UserRole.Standard;
+    }
+
+    public static UserDTO convertToDTO(User user){
+        return UserDTO.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .role(user.getRole())
+                .placesOwned(user.getPlacesOwned()
+                        .stream()
+                        .filter(placeOwner -> placeOwner.getOwner().getId().equals(user.getId()))
+                        .map(PlaceOwner::getPlace).collect(Collectors.toList()))
+                .reservations(user.getReservations())
+                .build();
     }
 }
