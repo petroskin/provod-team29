@@ -90,6 +90,7 @@ public class PlaceServiceImpl implements PlaceService
         return placeRepository.findAllByCityLike(city);
     }
 
+
     @Override
     public List<Place> searchPlaceByRatingGreaterEqual(Integer rating)
     {
