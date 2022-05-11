@@ -29,8 +29,8 @@ public class PlaceServiceImpl implements PlaceService
                              String description,
                              String address,
                              String city,
-                             Integer latitude,
-                             Integer longitude,
+                             Double latitude,
+                             Double longitude,
                              Integer standardCapacity,
                              Integer vipCapacity,
                              String placePoster)
