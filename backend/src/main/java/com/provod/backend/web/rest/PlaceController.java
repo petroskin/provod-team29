@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/clubs")
+@RequestMapping("/api/clubs")
 public class PlaceController {
 
     private final PlaceService placeService;
