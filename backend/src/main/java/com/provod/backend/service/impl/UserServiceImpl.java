@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -69,10 +70,25 @@ public class UserServiceImpl implements UserService
     public User updateUser(User user)
     {
         User original = userRepository.getById(user.getId());
+        checkNameValid(user.getName());
+        checkEmailValid(user.getEmail());
+        checkPhoneValid(user.getPhone());
+        if (!Objects.equals(user.getEmail(), original.getEmail())) {
+        checkEmailTaken(user.getEmail());
+        }
+        if (!Objects.equals(user.getPhone(), original.getPhone())) {
+        checkPhoneTaken(user.getPhone());
+        }
         original.setName(user.getName());
         original.setEmail(user.getEmail());
         original.setPhone(user.getPhone());
-        original.setRole(user.getRole());
+        if (user.getRole() != null) {
+            original.setRole(user.getRole());
+        }
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            checkPasswordValid(user.getPassword());
+            original.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         return userRepository.save(original);
     }
 
