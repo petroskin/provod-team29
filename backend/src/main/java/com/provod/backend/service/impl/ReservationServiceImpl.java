@@ -42,8 +42,7 @@ public class ReservationServiceImpl implements ReservationService
     @Override
     public List<Reservation> getReservationByUser(User user) {
 
-        Optional<List<Reservation>> opt = this.reservationRepository.findByUserId(user.getId());
-        return opt.orElseGet(List::of);
+        return this.reservationRepository.findAllByUser(user);
     }
 
     @Override
