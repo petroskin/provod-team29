@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/events")
+@RequestMapping("/api/events")
 public class EventController {
     private final EventService eventService;
     private final PlaceService placeService;
@@ -45,7 +45,7 @@ public class EventController {
         return ResponseEntity.ok(Event.convertToDTO(retVal));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Long> deleteEvent(@PathVariable Long id) {
         Boolean isSuccess =  this.eventService.removeEvent(id);
         return isSuccess ? ResponseEntity.ok(id) : ResponseEntity.badRequest().build();
