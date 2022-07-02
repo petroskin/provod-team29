@@ -5,9 +5,12 @@ import com.provod.backend.model.PlaceOwner;
 import com.provod.backend.model.User;
 import com.provod.backend.repository.jpa.PlaceOwnerRepository;
 import com.provod.backend.repository.jpa.PlaceRepository;
+import com.provod.backend.service.ImageStorageService;
 import com.provod.backend.service.PlaceService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -16,11 +19,13 @@ public class PlaceServiceImpl implements PlaceService
 {
     private final PlaceRepository placeRepository;
     private final PlaceOwnerRepository ownerRepository;
+    private final ImageStorageService imageStorageService;
 
-    public PlaceServiceImpl(PlaceRepository placeRepository, PlaceOwnerRepository ownerRepository)
+    public PlaceServiceImpl(PlaceRepository placeRepository, PlaceOwnerRepository ownerRepository, ImageStorageService imageStorageService)
     {
         this.placeRepository = placeRepository;
         this.ownerRepository = ownerRepository;
+        this.imageStorageService = imageStorageService;
     }
 
     //TODO poster should be image compatible data type
@@ -33,10 +38,17 @@ public class PlaceServiceImpl implements PlaceService
                              Double longitude,
                              Integer standardCapacity,
                              Integer vipCapacity,
-                             String placePoster)
+                             MultipartFile placePoster)
     {
         Place place = new Place(name, description, address, city, latitude, longitude, standardCapacity, vipCapacity);
-        place.setPlacePoster(placePoster);
+        if (placePoster != null) {
+            try {
+                imageStorageService.saveNewPlaceImage(placePoster, place.getId());
+            }
+            catch (IOException ignore) {
+                // ne bi trebalo da se desi
+            }
+        }
         return placeRepository.save(place);
     }
 

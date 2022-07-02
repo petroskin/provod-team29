@@ -27,8 +27,6 @@ public class Place
     private Integer standardCapacity;
     private Integer vipCapacity;
     private Integer rating;
-    //TODO poster should be image compatible data type
-    private String placePoster;
     @OneToMany(mappedBy = "place", orphanRemoval = true)
     private List<Event> events;
     @OneToMany(mappedBy = "place", orphanRemoval = true)

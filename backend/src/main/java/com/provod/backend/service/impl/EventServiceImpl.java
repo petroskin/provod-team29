@@ -34,7 +34,7 @@ public class EventServiceImpl implements EventService
         Event savedEvent = eventRepository.save(event);
         if(image != null){
             try{
-                imageStorageService.saveNewImage(image, savedEvent.getId());
+                imageStorageService.saveNewEventImage(image, savedEvent.getId());
             }
             catch (IOException ignore){
                 //ne bi trebalo da se desi ova

@@ -3,6 +3,7 @@ package com.provod.backend.service;
 import com.provod.backend.model.Place;
 import com.provod.backend.model.PlaceOwner;
 import com.provod.backend.model.User;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface PlaceService
                       Double longitude,
                       Integer standardCapacity,
                       Integer vipCapacity,
-                      String placePoster);
+                      MultipartFile placePoster);
     Place updatePlace(Place place);
     Boolean removePlace(Long id);
     Place getPlace(Long id);

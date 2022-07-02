@@ -21,74 +21,177 @@ import java.nio.file.Paths;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class ImageStorageServiceImpl implements ImageStorageService {
-    private final Path root = Paths.get("images");
+public class ImageStorageServiceImpl implements ImageStorageService
+{
+    private final Path eventRoot = Paths.get("images", "event");
+    private final Path placeRoot = Paths.get("images", "place");
 
     @Override
-    public void init() {
-        try {
-            if(!Files.exists(root))
-                Files.createDirectory(root);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not initialize folder for images!");
+    public void init()
+    {
+        try
+        {
+            if (!Files.exists(eventRoot))
+                Files.createDirectory(eventRoot);
+            if (!Files.exists(placeRoot))
+                Files.createDirectory(placeRoot);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Could not initialize folders for images!");
         }
     }
 
     @Override
-    public void saveNewImage(MultipartFile file, Long eventId) throws IOException {
-        File imageDir = new File(String.valueOf(this.root.resolve(eventId.toString())));
-        if(!Files.exists(imageDir.toPath())){
+    public void saveNewEventImage(MultipartFile file, Long eventId) throws IOException
+    {
+        File imageDir = new File(String.valueOf(this.eventRoot.resolve(eventId.toString())));
+        if (!Files.exists(imageDir.toPath()))
+        {
             Files.createDirectory(imageDir.toPath());
         }
         BufferedImage image = ImageIO.read(file.getInputStream());
 
         //maksimum rezolucija za slika shto se chuva da e 1000 pikseli za podolgata strana
         BufferedImage finalImage = null;
-        if(image.getWidth() >= image.getHeight()){
+        if (image.getWidth() >= image.getHeight())
+        {
             double aspectRatio = (double) image.getHeight() / image.getWidth();
             Image temp = image.getScaledInstance(1000, (int) (1000 * aspectRatio), Image.SCALE_SMOOTH);
             finalImage = new BufferedImage(temp.getWidth(null), temp.getHeight(null), BufferedImage.TYPE_INT_RGB);
             finalImage.getGraphics().drawImage(temp, 0, 0, Color.WHITE, null);
         }
-        else{
+        else
+        {
             double aspectRatio = (double) image.getWidth() / image.getHeight();
             Image temp = image.getScaledInstance((int) (1000 * aspectRatio), 1000, Image.SCALE_SMOOTH);
             finalImage = new BufferedImage(temp.getWidth(null), temp.getHeight(null), BufferedImage.TYPE_INT_RGB);
             finalImage.getGraphics().drawImage(temp, 0, 0, Color.WHITE, null);
         }
-        File outputFile = new File(String.valueOf(this.root.resolve(eventId + ".jpg")));
+        File outputFile = new File(String.valueOf(this.eventRoot.resolve(eventId + ".jpg")));
         outputFile.getParentFile().mkdirs();
-        ImageIO.write(finalImage,"jpg", outputFile);
+        ImageIO.write(finalImage, "jpg", outputFile);
     }
 
     @Override
-    public Resource load(Long eventId) {
-        try {
-            Path file = root.resolve(eventId + ".jpg");
+    public Resource loadEvent(Long eventId)
+    {
+        try
+        {
+            Path file = eventRoot.resolve(eventId + ".jpg");
             Resource resource = new UrlResource(file.toUri());
 
-            if (resource.exists() || resource.isReadable()) {
+            if (resource.exists() || resource.isReadable())
+            {
                 return resource;
-            } else {
+            }
+            else
+            {
                 throw new RuntimeException("Could not read the file!");
             }
-        } catch (MalformedURLException e) {
+        }
+        catch (MalformedURLException e)
+        {
             throw new RuntimeException("Error: " + e.getMessage());
         }
     }
 
     @Override
-    public Resource loadPlaceholder(){
-        try {
-            Path file = root.resolve("placeholder.jpg");
+    public void saveNewPlaceImage(MultipartFile file, Long placeId) throws IOException
+    {
+        File imageDir = new File(String.valueOf(this.placeRoot.resolve(placeId.toString())));
+        if (!Files.exists(imageDir.toPath()))
+        {
+            Files.createDirectory(imageDir.toPath());
+        }
+        BufferedImage image = ImageIO.read(file.getInputStream());
+
+        //maksimum rezolucija za slika shto se chuva da e 1000 pikseli za podolgata strana
+        BufferedImage finalImage = null;
+        if (image.getWidth() >= image.getHeight())
+        {
+            double aspectRatio = (double) image.getHeight() / image.getWidth();
+            Image temp = image.getScaledInstance(1000, (int) (1000 * aspectRatio), Image.SCALE_SMOOTH);
+            finalImage = new BufferedImage(temp.getWidth(null), temp.getHeight(null), BufferedImage.TYPE_INT_RGB);
+            finalImage.getGraphics().drawImage(temp, 0, 0, Color.WHITE, null);
+        }
+        else
+        {
+            double aspectRatio = (double) image.getWidth() / image.getHeight();
+            Image temp = image.getScaledInstance((int) (1000 * aspectRatio), 1000, Image.SCALE_SMOOTH);
+            finalImage = new BufferedImage(temp.getWidth(null), temp.getHeight(null), BufferedImage.TYPE_INT_RGB);
+            finalImage.getGraphics().drawImage(temp, 0, 0, Color.WHITE, null);
+        }
+        File outputFile = new File(String.valueOf(this.placeRoot.resolve(placeId + ".jpg")));
+        outputFile.getParentFile().mkdirs();
+        ImageIO.write(finalImage, "jpg", outputFile);
+    }
+
+    @Override
+    public Resource loadPlace(Long placeId)
+    {
+        try
+        {
+            Path file = placeRoot.resolve(placeId + ".jpg");
             Resource resource = new UrlResource(file.toUri());
 
-            if (resource.exists() || resource.isReadable()) {
+            if (resource.exists() || resource.isReadable())
+            {
                 return resource;
-            } else {
+            }
+            else
+            {
                 throw new RuntimeException("Could not read the file!");
             }
-        } catch (MalformedURLException e) {
+        }
+        catch (MalformedURLException e)
+        {
+            throw new RuntimeException("Error: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Resource loadEventPlaceholder()
+    {
+        try
+        {
+            Path file = eventRoot.resolve("placeholder.jpg");
+            Resource resource = new UrlResource(file.toUri());
+
+            if (resource.exists() || resource.isReadable())
+            {
+                return resource;
+            }
+            else
+            {
+                throw new RuntimeException("Could not read the file!");
+            }
+        }
+        catch (MalformedURLException e)
+        {
+            throw new RuntimeException("Error: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Resource loadPlacePlaceholder()
+    {
+        try
+        {
+            Path file = placeRoot.resolve("placeholder.jpg");
+            Resource resource = new UrlResource(file.toUri());
+
+            if (resource.exists() || resource.isReadable())
+            {
+                return resource;
+            }
+            else
+            {
+                throw new RuntimeException("Could not read the file!");
+            }
+        }
+        catch (MalformedURLException e)
+        {
             throw new RuntimeException("Error: " + e.getMessage());
         }
     }

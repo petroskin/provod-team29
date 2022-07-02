@@ -8,9 +8,15 @@ import java.io.IOException;
 public interface ImageStorageService {
     public void init();
 
-    public void saveNewImage(MultipartFile file, Long eventId) throws IOException;
+    public void saveNewEventImage(MultipartFile file, Long eventId) throws IOException;
 
-    public Resource load(Long eventId);
+    public void saveNewPlaceImage(MultipartFile file, Long placeId) throws IOException;
 
-    public Resource loadPlaceholder();
+    public Resource loadEvent(Long eventId);
+
+    public Resource loadPlace(Long placeId);
+
+    public Resource loadEventPlaceholder();
+
+    public Resource loadPlacePlaceholder();
 }
