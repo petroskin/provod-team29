@@ -21,4 +21,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>
             attributePaths = {"reservations"})
     @Query("select r from Reservation r where r.user.id = :id")
     Optional<List<Reservation>> findByUserId(@Param("id") Long id);
+
+    List<Reservation> findAllByUser(User user);
 }

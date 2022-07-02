@@ -11,6 +11,7 @@ public interface UserService extends UserDetailsService
     User getUserByEmail(String email);
     User getUserWithPlacesOwned(Long id);
     User getUserWithReservations(Long id);
+    User getUserWithReservationsAndPlacesOwned(Long id);
     User updateUser(User user);
     User setUserRole(User user, UserRole role);
 }

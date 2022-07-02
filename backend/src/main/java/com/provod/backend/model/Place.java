@@ -1,5 +1,6 @@
 package com.provod.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.provod.backend.model.DTOs.PlaceDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,9 +28,11 @@ public class Place
     private Integer standardCapacity;
     private Integer vipCapacity;
     private Integer rating;
-    @OneToMany(mappedBy = "place", orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany(mappedBy = "place")
     private List<Event> events;
-    @OneToMany(mappedBy = "place", orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany(mappedBy = "place")
     private List<PlaceOwner> owners;
 
     public Place(String name, String description, String address, String city, Double latitude, Double longitude, Integer standardCapacity, Integer vipCapacity)

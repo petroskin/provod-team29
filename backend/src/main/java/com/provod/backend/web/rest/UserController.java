@@ -38,10 +38,10 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{id}/reservations")
-    public ResponseEntity<UserDTO> getUserWithReservations(@PathVariable Long id) {
+    @GetMapping("/{id}/reservationsandplaces")
+    public ResponseEntity<UserDTO> getUserWithReservationsAndPlacesOwned(@PathVariable Long id) {
         try {
-            User user = userService.getUserWithReservations(id);
+            User user = userService.getUserWithReservationsAndPlacesOwned(id);
             return ResponseEntity.ok(User.convertToDTO(user));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();

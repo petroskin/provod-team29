@@ -1,5 +1,6 @@
 package com.provod.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.provod.backend.model.DTOs.EventDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,8 @@ public class Event
     private LocalDateTime start;
     @ManyToOne
     private Place place;
-    @OneToMany(mappedBy = "event", orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany(mappedBy = "event")
     private List<Reservation> reservations;
 
     public Event(LocalDateTime start, Place place)

@@ -1,5 +1,6 @@
 package com.provod.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.provod.backend.model.DTOs.UserDTO;
 import com.provod.backend.model.enums.UserRole;
 import lombok.Getter;
@@ -26,9 +27,11 @@ public class User
     private String password;
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
-    @OneToMany(mappedBy = "owner", orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany(mappedBy = "owner")
     private List<PlaceOwner> placesOwned;
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
     private List<Reservation> reservations;
 
     public User(String name, String email, String phone, String password)

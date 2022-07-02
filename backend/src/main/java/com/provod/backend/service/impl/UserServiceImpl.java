@@ -5,6 +5,9 @@ import com.provod.backend.model.enums.UserRole;
 import com.provod.backend.model.exceptions.EmailTakenException;
 import com.provod.backend.model.exceptions.InvalidFieldException;
 import com.provod.backend.model.exceptions.PhoneNumberTakenException;
+import com.provod.backend.repository.jpa.PlaceOwnerRepository;
+import com.provod.backend.repository.jpa.PlaceRepository;
+import com.provod.backend.repository.jpa.ReservationRepository;
 import com.provod.backend.repository.jpa.UserRepository;
 import com.provod.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,9 @@ import java.util.Objects;
 public class UserServiceImpl implements UserService
 {
     private final UserRepository userRepository;
+    private final ReservationRepository reservationRepository;
+    private final PlaceRepository placeRepository;
+    private final PlaceOwnerRepository placeOwnerRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
@@ -64,6 +70,15 @@ public class UserServiceImpl implements UserService
     public User getUserWithReservations(Long id)
     {
         return userRepository.findByIdWithReservations(id).orElseThrow(() -> new NoSuchElementException(id.toString()));
+    }
+
+    @Override
+    public User getUserWithReservationsAndPlacesOwned(Long id)
+    {
+        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id.toString()));
+        user.setReservations(reservationRepository.findAllByUser(user));
+        user.setPlacesOwned(placeOwnerRepository.findAllByOwner(user));
+        return user;
     }
 
     @Override
