@@ -20,8 +20,18 @@ public class PlaceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PlaceDTO>> getAllPlaces(@RequestBody String city) {
-            return this.getAllPlacesInACity(city);
+    public ResponseEntity<List<Place>> getPlaces(@RequestParam(required = false) String city, @RequestParam(required = false) String name) {
+        List<Place> places;
+        if (name != null && !name.isEmpty()) {
+            places = placeService.searchPlaceByName(name);
+        }
+        else if (city != null && !city.isEmpty()) {
+            places = placeService.searchPlaceByCity(city);
+        }
+        else {
+            places = placeService.getAllPlaces();
+        }
+        return ResponseEntity.ok(places);
     }
 
     @GetMapping("/search")

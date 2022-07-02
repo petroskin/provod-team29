@@ -13,9 +13,11 @@ import java.util.Optional;
 @Repository
 public interface PlaceRepository extends JpaRepository<Place, Long>
 {
-    List<Place> findAllByNameLike(String placeName);
+    @Query("select p from Place p where lower(p.name) like %:placeName%")
+    List<Place> findByName(@Param("placeName") String placeName);
 
-    List<Place> findAllByCityLike(String cityName);
+    @Query("select p from Place p where lower(p.city) like %:cityName%")
+    List<Place> findByCity(@Param("cityName") String cityName);
 
     List<Place> findAllByRatingGreaterThanEqual(Integer rating);
 

@@ -21,6 +21,7 @@ public interface PlaceService
                       MultipartFile placePoster);
     Place updatePlace(Place place);
     Boolean removePlace(Long id);
+    List<Place> getAllPlaces();
     Place getPlace(Long id);
     Place getPlaceWithEvents(Long id);
     Place getPlaceWithOwners(Long id);

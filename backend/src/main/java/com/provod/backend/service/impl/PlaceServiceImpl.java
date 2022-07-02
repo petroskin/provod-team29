@@ -67,6 +67,11 @@ public class PlaceServiceImpl implements PlaceService
     }
 
     @Override
+    public List<Place> getAllPlaces() {
+        return placeRepository.findAll();
+    }
+
+    @Override
     public Place getPlace(Long id)
     {
         return placeRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id.toString()));
@@ -93,13 +98,13 @@ public class PlaceServiceImpl implements PlaceService
     @Override
     public List<Place> searchPlaceByName(String name)
     {
-        return placeRepository.findAllByNameLike(name);
+        return placeRepository.findByName(name.toLowerCase());
     }
 
     @Override
     public List<Place> searchPlaceByCity(String city)
     {
-        return placeRepository.findAllByCityLike(city);
+        return placeRepository.findByCity(city.toLowerCase());
     }
 
 
