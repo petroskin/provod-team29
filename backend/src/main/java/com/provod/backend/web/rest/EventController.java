@@ -8,12 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/events")
+@RequestMapping("/events")
 public class EventController {
     private final EventService eventService;
     private final PlaceService placeService;
@@ -35,7 +34,7 @@ public class EventController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<EventDTO> createEvent(@RequestPart @Valid EventDTO eventDTO, @RequestPart(required = false) MultipartFile image) {
+    public ResponseEntity<EventDTO> createEvent(@RequestPart EventDTO eventDTO, @RequestPart(required = false) MultipartFile image) {
         Event retVal;
         if (eventDTO != null) {
             retVal = this.eventService.createEvent(eventDTO.getStart(), placeService.getPlace(eventDTO.getPlaceId()), image);
@@ -44,6 +43,12 @@ public class EventController {
         else return ResponseEntity.badRequest().build();
 
         return ResponseEntity.ok(Event.convertToDTO(retVal));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Long> deleteEvent(@PathVariable Long id) {
+        Boolean isSuccess =  this.eventService.removeEvent(id);
+        return isSuccess ? ResponseEntity.ok(id) : ResponseEntity.badRequest().build();
     }
 
 }

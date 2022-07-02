@@ -10,7 +10,6 @@ import com.provod.backend.model.exceptions.PhoneNumberTakenException;
 import com.provod.backend.security.JWTUtils;
 import com.provod.backend.service.UserService;
 import com.provod.backend.service.impl.UserDetailsImpl;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,8 +19,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +40,7 @@ public class AuthController
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> signIn(@Valid @RequestBody SignInDTO signInDto)
+    public ResponseEntity<?> signIn(@RequestBody SignInDTO signInDto)
     {
         Authentication authentication;
         try
@@ -75,7 +72,7 @@ public class AuthController
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@Valid @RequestBody SignUpDTO signUpDTO)
+    public ResponseEntity<?> signUp(@RequestBody SignUpDTO signUpDTO)
     {
         try
         {
@@ -84,7 +81,7 @@ public class AuthController
         }
         catch (InvalidFieldException e)
         {
-            String errorMessage;
+            String errorMessage = "";
             switch (e.getMessage())
             {
                 case "name":
