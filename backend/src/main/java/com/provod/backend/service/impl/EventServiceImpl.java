@@ -47,9 +47,23 @@ public class EventServiceImpl implements EventService
     }
 
     @Override
-    public Event updateEvent(Event event)
+    public Event updateEvent(Long id, LocalDateTime start, Place place, MultipartFile image)
     {
-        return eventRepository.save(event);
+        if (eventRepository.findByPlaceAndStartBetween(place, start.minusHours(6L), start.plusHours(6L)).isPresent())
+            throw new NightAlreadyRegisteredException();
+        Event event = eventRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id.toString()));
+        event.setPlace(place);
+        event.setStart(start);
+        event = eventRepository.save(event);
+        if(image != null){
+            try{
+                imageStorageService.saveNewEventImage(image, event.getId());
+            }
+            catch (IOException ignore){
+                //ne bi trebalo da se desi ova
+            }
+        }
+        return event;
     }
 
     @Override

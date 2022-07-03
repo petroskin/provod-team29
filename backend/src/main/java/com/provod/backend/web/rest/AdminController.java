@@ -1,5 +1,6 @@
 package com.provod.backend.web.rest;
 
+import com.provod.backend.model.DTOs.EventDTO;
 import com.provod.backend.model.DTOs.PlaceDTO;
 import com.provod.backend.model.DTOs.UserDTO;
 import com.provod.backend.model.Event;
@@ -7,6 +8,7 @@ import com.provod.backend.model.Place;
 import com.provod.backend.model.User;
 import com.provod.backend.model.exceptions.EmailTakenException;
 import com.provod.backend.model.exceptions.InvalidFieldException;
+import com.provod.backend.model.exceptions.NightAlreadyRegisteredException;
 import com.provod.backend.model.exceptions.PhoneNumberTakenException;
 import com.provod.backend.service.EventService;
 import com.provod.backend.service.ImageStorageService;
@@ -18,6 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -106,25 +111,43 @@ public class AdminController {
         }
     }
 
-    @PutMapping("/edit-event/{id}")
-    public ResponseEntity<Long> editEvent(@PathVariable Long id, @RequestParam MultipartFile poster, @RequestParam PlaceDTO place, @RequestParam LocalDateTime date) {
-        Event event = eventService.getEvent(id);
-        if (event == null) return ResponseEntity.notFound().build();
-        event.setPlace(new Place(place.getName(), place.getDescription(), place.getAddress(), place.getCity(), place.getLatitude(), place.getLongitude(), 0, 0));
-        event.setStart(date);
-        Event ret = this.eventService.updateEvent(event);
-
-        if (ret == null) return ResponseEntity.internalServerError().build();
-
-        // update image poster
-        try {
-            imageStorageService.saveNewEventImage(poster, id);
-        } catch (IOException exception) {
-            return  ResponseEntity.internalServerError().build();
+    @PutMapping("/event/{id}")
+    public ResponseEntity<EventDTO> editEvent(
+            @PathVariable Long id,
+            @RequestParam String start,
+            @RequestParam Long placeId,
+            @RequestPart(name = "image", required = false) MultipartFile image) {
+        if (placeId == null || start == null) {
+            return ResponseEntity.badRequest().build();
         }
-
-
-        return ResponseEntity.ok(id);
+        Place place;
+        try {
+            place = placeService.getPlace(placeId);
+        }
+        catch (NoSuchElementException e) {
+            return ResponseEntity.status(421).build();
+        }
+        LocalDateTime startParsed;
+        try {
+            startParsed = LocalDateTime.parse(start.replace('T', ' '), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+        catch (DateTimeParseException e) {
+            startParsed = LocalDateTime.parse(start.replace('T', ' '), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        }
+        try {
+            return ResponseEntity.ok(Event.convertToDTO(this.eventService.updateEvent(
+                    id,
+                    startParsed,
+                    place,
+                    image
+            )));
+        }
+        catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().build();
+        }
+        catch (NightAlreadyRegisteredException e) {
+            return ResponseEntity.status(422).build();
+        }
     }
 
     @PutMapping("/edit-place/{id}")

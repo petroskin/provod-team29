@@ -10,7 +10,7 @@ import java.util.List;
 public interface EventService
 {
     Event createEvent(LocalDateTime start, Place place, MultipartFile image);
-    Event updateEvent(Event event);
+    Event updateEvent(Long id, LocalDateTime start, Place place, MultipartFile image);
     Boolean removeEvent(Long id);
     Event getEvent(Long id);
     Event getEventWithReservations(Long id);
