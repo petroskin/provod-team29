@@ -21,6 +21,8 @@ public interface EventRepository extends JpaRepository<Event, Long>
 
     Optional<Event> findByPlaceAndStartBetween(Place place, LocalDateTime from, LocalDateTime to);
 
+    List<Event> findAllByPlace(Place place);
+
     @EntityGraph(type = EntityGraph.EntityGraphType.LOAD,
             attributePaths = {"reservations"})
     @Query("select e from Event e where e.id = :id")

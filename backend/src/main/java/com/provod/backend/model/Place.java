@@ -59,7 +59,7 @@ public class Place
                 .standardCapacity(place.getStandardCapacity())
                 .vipCapacity(place.getVipCapacity())
                 .rating(place.getRating())
-                .eventIds(place.getEvents().stream().map(Event::getId).collect(Collectors.toList()))
+                .events(place.getEvents())
                 .ownerIds(place
                         .getOwners()
                         .stream()

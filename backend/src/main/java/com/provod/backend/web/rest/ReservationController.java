@@ -59,10 +59,10 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.getReservationByUser(user));
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<ReservationDTO> addReservation(@RequestBody ReservationDTO dto, HttpServletRequest request) {
         try {
-            User user = userService.getUserByEmail(request.getRemoteUser());
+            User user = userService.getUserById(dto.getUserId());
             Event event = eventService.getEvent(dto.getEventId());
             return ResponseEntity.ok(Reservation.convertToDTO(this.reservationService.createReservation(user, event, dto.getTableType())));
         } catch (OneReservationPerEventException e) {

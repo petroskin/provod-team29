@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @RestController
@@ -34,13 +35,23 @@ public class PlaceController {
         return ResponseEntity.ok(places);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<PlaceDTO>> getAllPlacesInACity(@RequestBody String city) {
-        return ResponseEntity.ok(this.placeService.searchPlaceByCity(city).stream().map(Place::convertToDTO).collect(Collectors.toList()));
+    @GetMapping("/{id}/events")
+    public ResponseEntity<PlaceDTO> getPlaceByIdWithEvents(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(Place.convertToDTO(this.placeService.getPlaceWithEvents(id)));
+        }
+        catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PlaceDTO> getPlaceById(@PathVariable Long id) {
-        return ResponseEntity.ok(Place.convertToDTO(this.placeService.getPlace(id)));
+        try {
+            return ResponseEntity.ok(Place.convertToDTO(this.placeService.getPlace(id)));
+        }
+        catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
