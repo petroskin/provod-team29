@@ -141,6 +141,9 @@ public class PlaceServiceImpl implements PlaceService
     public PlaceOwner addPlaceOwner(Place place, User owner)
     {
         PlaceOwner placeOwner = new PlaceOwner(owner, place);
+        if (ownerRepository.findAllByPlace(place).stream().anyMatch(i -> i.getOwner().getId().equals(owner.getId()))) {
+            return null;
+        }
         return ownerRepository.save(placeOwner);
     }
 

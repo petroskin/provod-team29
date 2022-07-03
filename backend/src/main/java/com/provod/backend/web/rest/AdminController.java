@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -40,15 +41,17 @@ public class AdminController {
         this.imageStorageService = imageStorageService;
     }
 
-
-    // TODO: Treda da se dodade PlaceID vo povik na front end
-    @PostMapping("/add-owner")
-    public ResponseEntity<Long> addOwner(@RequestParam Long placeId,@RequestParam String email){
-        User user = userService.getUserByEmail(email);
-        Place place = placeService.getPlace(placeId);
-        placeService.addPlaceOwner(place, user);
-
-        return ResponseEntity.ok(user.getId());
+    @PostMapping("/owner")
+    public ResponseEntity<Long> addOwner(@RequestBody Map<String, String> body){
+        try {
+            User user = userService.getUserByEmail(body.get("email"));
+            Place place = placeService.getPlace(Long.parseLong(body.get("placeId")));
+            placeService.addPlaceOwner(place, user);
+            return ResponseEntity.ok(user.getId());
+        }
+        catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 
@@ -176,7 +179,7 @@ public class AdminController {
         return placeService.removePlace(id) ? ResponseEntity.ok(id) : ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/delete-owner/{id}")
+    @DeleteMapping("/owner/{id}")
     public ResponseEntity<Long> deleteOwner(@PathVariable Long id) {
         return placeService.removePlaceOwner(id) ? ResponseEntity.ok(id) : ResponseEntity.notFound().build();
     }
