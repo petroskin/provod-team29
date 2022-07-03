@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @RestController
@@ -47,8 +48,30 @@ public class EventController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Long> deleteEvent(@PathVariable Long id) {
-        Boolean isSuccess =  this.eventService.removeEvent(id);
+        Boolean isSuccess;
+        try
+        {
+            isSuccess = this.eventService.removeEvent(id);
+        }
+        catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().body(id);
+        }
         return isSuccess ? ResponseEntity.ok(id) : ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Event>> getEventsByUserId(@PathVariable Long id) {
+        return ResponseEntity.ok(this.eventService.getEventsByUserId(id));
+    }
+
+    @GetMapping("/place/{id}")
+    public ResponseEntity<List<Event>> getEventsByPlaceId(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(this.eventService.getEventsByPlaceId(id));
+        }
+        catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }

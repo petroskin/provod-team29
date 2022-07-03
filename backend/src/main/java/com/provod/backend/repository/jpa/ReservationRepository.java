@@ -23,4 +23,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>
     Optional<List<Reservation>> findByUserId(@Param("id") Long id);
 
     List<Reservation> findAllByUser(User user);
+    List<Reservation> findAllByEvent(Event event);
 }

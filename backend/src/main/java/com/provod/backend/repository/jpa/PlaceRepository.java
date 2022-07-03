@@ -1,6 +1,8 @@
 package com.provod.backend.repository.jpa;
 
 import com.provod.backend.model.Place;
+import com.provod.backend.model.PlaceOwner;
+import com.provod.backend.model.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +20,8 @@ public interface PlaceRepository extends JpaRepository<Place, Long>
 
     @Query("select p from Place p where lower(p.city) like %:cityName%")
     List<Place> findByCity(@Param("cityName") String cityName);
+
+    List<Place> findAllByOwnersContaining(PlaceOwner owner);
 
     List<Place> findAllByRatingGreaterThanEqual(Integer rating);
 

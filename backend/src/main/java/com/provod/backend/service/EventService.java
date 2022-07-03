@@ -17,4 +17,6 @@ public interface EventService
     List<Event> getAllEvents();
     List<Event> searchEventByStartAfter(LocalDateTime after);
     List<Event> searchEventByStartBetween(LocalDateTime from, LocalDateTime to);
+    List<Event> getEventsByUserId(Long id);
+    List<Event> getEventsByPlaceId(Long id);
 }
