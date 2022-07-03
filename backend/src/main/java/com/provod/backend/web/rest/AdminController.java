@@ -54,10 +54,8 @@ public class AdminController {
         }
     }
 
-
-    // TODO: Treba da se vidi sto se prakja od front end, falat dvata kapaciteti i posterot
-    @PostMapping("/add-place")
-    public ResponseEntity<Place> addPlace(@RequestParam PlaceDTO place) {
+    @PostMapping("/place")
+    public ResponseEntity<Place> addPlace(@RequestBody PlaceDTO place) {
         Place ret = placeService.createPlace(place.getName(),
                                              place.getDescription(),
                                              place.getAddress(),
@@ -68,7 +66,7 @@ public class AdminController {
                                              place.getVipCapacity(),
                                    null);
 
-        return ret == null ? ResponseEntity.ok(ret) : ResponseEntity.internalServerError().build();
+        return ret != null ? ResponseEntity.ok(ret) : ResponseEntity.internalServerError().build();
     }
 
 
