@@ -21,7 +21,7 @@ public class PlaceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Place>> getPlaces(@RequestParam(required = false) String city, @RequestParam(required = false) String name) {
+    public ResponseEntity<List<PlaceDTO>> getPlaces(@RequestParam(required = false) String city, @RequestParam(required = false) String name) {
         List<Place> places;
         if (name != null && !name.isEmpty()) {
             places = placeService.searchPlaceByName(name);
@@ -32,7 +32,7 @@ public class PlaceController {
         else {
             places = placeService.getAllPlaces();
         }
-        return ResponseEntity.ok(places);
+        return ResponseEntity.ok(places.stream().map(Place::convertToDTO).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}/events")

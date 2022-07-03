@@ -150,29 +150,14 @@ public class AdminController {
         }
     }
 
-    @PutMapping("/edit-place/{id}")
-    public ResponseEntity<Long> editPlace(@PathVariable Long id,
-                                          @RequestParam String name,
-                                          @RequestParam String description,
-                                          @RequestParam String address,
-                                          @RequestParam String city,
-                                          @RequestParam double latitude,
-                                          @RequestParam double longitude,
-                                          @RequestParam int rating) {
-        Place place = placeService.getPlace(id);
-        if (place == null) return ResponseEntity.badRequest().build();
-
-        place.setName(name);
-        place.setDescription(description);
-        place.setAddress(address);
-        place.setCity(city);
-        place.setLatitude(latitude);
-        place.setLongitude(longitude);
-        place.setRating(rating);
-
-        Place ret = placeService.updatePlace(place);
-
-        return place != null ? ResponseEntity.ok(id) : ResponseEntity.internalServerError().build();
+    @PutMapping("/place/{id}")
+    public ResponseEntity<PlaceDTO> editPlace(@PathVariable Long id, @RequestBody PlaceDTO placeDTO) {
+        try {
+            return ResponseEntity.ok(Place.convertToDTO(placeService.updatePlace(id, placeDTO)));
+        }
+        catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 
@@ -186,7 +171,7 @@ public class AdminController {
         }
     }
 
-    @DeleteMapping("/delete-place/{id}")
+    @DeleteMapping("/place/{id}")
     public ResponseEntity<Long> deletePlace(@PathVariable Long id) {
         return placeService.removePlace(id) ? ResponseEntity.ok(id) : ResponseEntity.notFound().build();
     }

@@ -1,6 +1,7 @@
 package com.provod.backend.model.DTOs;
 
 import com.provod.backend.model.Event;
+import com.provod.backend.model.PlaceOwner;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,5 +23,5 @@ public class PlaceDTO {
     Integer vipCapacity;
     Integer rating;
     List<Event> events;
-    List<Long> ownerIds;
+    List<PlaceOwner> owners;
 }

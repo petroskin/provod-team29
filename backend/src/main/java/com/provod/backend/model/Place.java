@@ -60,11 +60,7 @@ public class Place
                 .vipCapacity(place.getVipCapacity())
                 .rating(place.getRating())
                 .events(place.getEvents())
-                .ownerIds(place
-                        .getOwners()
-                        .stream()
-                        .filter(placeOwner -> placeOwner.getPlace().getId().equals(place.getId()))
-                        .map(placeOwner -> placeOwner.getOwner().getId()).collect(Collectors.toList()))
+                .owners(place.getOwners())
                 .build();
     }
 }

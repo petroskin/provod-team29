@@ -1,5 +1,6 @@
 package com.provod.backend.service.impl;
 
+import com.provod.backend.model.DTOs.PlaceDTO;
 import com.provod.backend.model.Place;
 import com.provod.backend.model.PlaceOwner;
 import com.provod.backend.model.User;
@@ -8,6 +9,7 @@ import com.provod.backend.repository.jpa.PlaceOwnerRepository;
 import com.provod.backend.repository.jpa.PlaceRepository;
 import com.provod.backend.service.ImageStorageService;
 import com.provod.backend.service.PlaceService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
+@AllArgsConstructor
 public class PlaceServiceImpl implements PlaceService
 {
     private final PlaceRepository placeRepository;
@@ -23,15 +26,6 @@ public class PlaceServiceImpl implements PlaceService
     private final EventRepository eventRepository;
     private final ImageStorageService imageStorageService;
 
-    public PlaceServiceImpl(PlaceRepository placeRepository, PlaceOwnerRepository ownerRepository, EventRepository eventRepository, ImageStorageService imageStorageService)
-    {
-        this.placeRepository = placeRepository;
-        this.ownerRepository = ownerRepository;
-        this.eventRepository = eventRepository;
-        this.imageStorageService = imageStorageService;
-    }
-
-    //TODO poster should be image compatible data type
     @Override
     public Place createPlace(String name,
                              String description,
@@ -56,21 +50,39 @@ public class PlaceServiceImpl implements PlaceService
     }
 
     @Override
-    public Place updatePlace(Place place)
+    public Place updatePlace(Long id, PlaceDTO placeDTO)
     {
+        Place place = placeRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id.toString()));
+        place.setName(placeDTO.getName());
+        place.setDescription(placeDTO.getDescription());
+        place.setAddress(placeDTO.getAddress());
+        place.setCity(placeDTO.getCity());
+        place.setLatitude(placeDTO.getLatitude());
+        place.setLongitude(placeDTO.getLongitude());
+        place.setStandardCapacity(placeDTO.getStandardCapacity());
+        place.setVipCapacity(placeDTO.getVipCapacity());
+        place.setRating(placeDTO.getRating());
         return placeRepository.save(place);
     }
 
     @Override
     public Boolean removePlace(Long id)
     {
+        Place place = placeRepository.findById(id).orElse(null);
+        if (place == null) {
+            return false;
+        }
+        ownerRepository.deleteAll(ownerRepository.findAllByPlace(place));
         placeRepository.deleteById(id);
+        ownerRepository.flush();
         placeRepository.flush();
         return !placeRepository.existsById(id);
     }
 
     @Override
     public List<Place> getAllPlaces() {
+        List<Place> places = placeRepository.findAll();
+        places.forEach(i -> i.setOwners(ownerRepository.findAllByPlace(i)));
         return placeRepository.findAll();
     }
 

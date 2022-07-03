@@ -1,5 +1,6 @@
 package com.provod.backend.service;
 
+import com.provod.backend.model.DTOs.PlaceDTO;
 import com.provod.backend.model.Place;
 import com.provod.backend.model.PlaceOwner;
 import com.provod.backend.model.User;
@@ -19,7 +20,7 @@ public interface PlaceService
                       Integer standardCapacity,
                       Integer vipCapacity,
                       MultipartFile placePoster);
-    Place updatePlace(Place place);
+    Place updatePlace(Long id, PlaceDTO placeDTO);
     Boolean removePlace(Long id);
     List<Place> getAllPlaces();
     Place getPlace(Long id);
