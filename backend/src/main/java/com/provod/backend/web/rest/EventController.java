@@ -27,8 +27,8 @@ public class EventController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EventDTO>> getAllEvents() {
-        return ResponseEntity.ok(this.eventService.getAllEvents().stream().map(Event::convertToDTO).collect(Collectors.toList()));
+    public ResponseEntity<List<Event>> getAllEvents() {
+        return ResponseEntity.ok(this.eventService.getAllEvents());
     }
 
     @GetMapping("/{id}")

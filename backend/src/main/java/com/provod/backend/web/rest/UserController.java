@@ -28,6 +28,11 @@ public class UserController {
         this.placeService = placeService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAll() {
+        return ResponseEntity.ok(userService.findAll().stream().map(User::convertToDTO).collect(Collectors.toList()));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         try {

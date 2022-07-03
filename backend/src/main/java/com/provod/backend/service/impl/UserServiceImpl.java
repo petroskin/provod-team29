@@ -49,6 +49,11 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    @Override
     public User getUserById(Long id)
     {
         return userRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id.toString()));
@@ -105,6 +110,14 @@ public class UserServiceImpl implements UserService
             original.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         return userRepository.save(original);
+    }
+
+    @Override
+    public Boolean deleteUser(Long id)
+    {
+        userRepository.deleteById(id);
+        userRepository.flush();
+        return userRepository.findById(id).isEmpty();
     }
 
     @Override

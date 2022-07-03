@@ -1,9 +1,13 @@
 package com.provod.backend.web.rest;
 
 import com.provod.backend.model.DTOs.PlaceDTO;
+import com.provod.backend.model.DTOs.UserDTO;
 import com.provod.backend.model.Event;
 import com.provod.backend.model.Place;
 import com.provod.backend.model.User;
+import com.provod.backend.model.exceptions.EmailTakenException;
+import com.provod.backend.model.exceptions.InvalidFieldException;
+import com.provod.backend.model.exceptions.PhoneNumberTakenException;
 import com.provod.backend.service.EventService;
 import com.provod.backend.service.ImageStorageService;
 import com.provod.backend.service.PlaceService;
@@ -16,7 +20,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class AdminController {
 
     private final PlaceService placeService;
@@ -60,15 +64,46 @@ public class AdminController {
     }
 
 
-    @PutMapping("/edit-user/{id}")
-    public ResponseEntity<Long> editUser(@PathVariable Long id, @RequestParam String name, @RequestParam String email, @RequestParam String phone) {
-        User user = userService.getUserById(id);
-        if (user == null) return ResponseEntity.notFound().build();
-        user.setName(name);
-        user.setEmail(email);
-        user.setPhone(phone);
-        User ret = this.userService.updateUser(user);
-        return ResponseEntity.ok(id);
+    @PutMapping("/user/{id}")
+    public ResponseEntity<UserDTO> editUser(@PathVariable Long id, @RequestBody User updatedUser) {
+        try {
+            if (updatedUser.getId() != null && updatedUser.getId() != 0) {
+                return ResponseEntity.badRequest().build();
+            }
+            updatedUser.setId(id);
+            User user = this.userService.updateUser(updatedUser);
+            return ResponseEntity.ok(User.convertToDTO(user));
+        }
+        catch (InvalidFieldException e) {
+            String errorMessage;
+            switch (e.getMessage())
+            {
+                case "name":
+                    errorMessage = "Name must contain only alphanumeric characters and underscore, and is limited to 50 characters.";
+                    break;
+                case "email":
+                    errorMessage = "Email must be in the form x@y.z.";
+                    break;
+                case "phone":
+                    errorMessage = "Phone must consist of numbers and maybe + at the beginning.";
+                    break;
+                case "password":
+                    errorMessage = "Password must be between 8 and 30 characters long.";
+                    break;
+                default:
+                    errorMessage = "Unknown error.";
+            }
+            return ResponseEntity.badRequest().build();
+        }
+        catch (EmailTakenException e) {
+            return ResponseEntity.status(418).build();
+        }
+        catch (PhoneNumberTakenException e) {
+            return ResponseEntity.status(419).build();
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PutMapping("/edit-event/{id}")
@@ -117,12 +152,16 @@ public class AdminController {
         return place != null ? ResponseEntity.ok(id) : ResponseEntity.internalServerError().build();
     }
 
-    // TODO: Nema komanda vo UserService
-//
-//    @DeleteMapping("delete-user/{id}")
-//    public ResponseEntity<Long> deleteUser(@PathVariable Long id) {
-//
-//    }
+
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<Long> deleteUser(@PathVariable Long id) {
+        if (userService.deleteUser(id)) {
+            return ResponseEntity.ok(id);
+        }
+        else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
     @DeleteMapping("/delete-place/{id}")
     public ResponseEntity<Long> deletePlace(@PathVariable Long id) {
