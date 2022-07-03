@@ -2,12 +2,15 @@ package com.provod.backend.web.rest;
 
 import com.provod.backend.model.Event;
 import com.provod.backend.model.DTOs.EventDTO;
+import com.provod.backend.model.exceptions.NightAlreadyRegisteredException;
 import com.provod.backend.service.EventService;
 import com.provod.backend.service.PlaceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -34,16 +37,26 @@ public class EventController {
         return ResponseEntity.ok(Event.convertToDTO(event));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<EventDTO> createEvent(@RequestPart EventDTO eventDTO, @RequestPart(required = false) MultipartFile image) {
-        Event retVal;
-        if (eventDTO != null) {
-            retVal = this.eventService.createEvent(eventDTO.getStart(), placeService.getPlace(eventDTO.getPlaceId()), image);
+    @PostMapping
+    public ResponseEntity<EventDTO> createEvent(
+            @RequestParam String start,
+            @RequestParam Long placeId,
+            @RequestPart(name = "image", required = false) MultipartFile image) {
+        if (placeId == null || start == null) {
+            return ResponseEntity.badRequest().build();
         }
-
-        else return ResponseEntity.badRequest().build();
-
-        return ResponseEntity.ok(Event.convertToDTO(retVal));
+        try
+        {
+            return ResponseEntity.ok(Event.convertToDTO(this.eventService.createEvent(
+                    LocalDateTime.parse(start.replace('T', ' '), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                    placeService.getPlace(placeId), image)));
+        }
+        catch (NoSuchElementException e) {
+            return ResponseEntity.status(421).build();
+        }
+        catch (NightAlreadyRegisteredException e) {
+            return ResponseEntity.status(422).build();
+        }
     }
 
     @DeleteMapping("/{id}")
