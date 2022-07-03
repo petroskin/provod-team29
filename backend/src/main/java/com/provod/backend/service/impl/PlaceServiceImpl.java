@@ -3,6 +3,7 @@ package com.provod.backend.service.impl;
 import com.provod.backend.model.Place;
 import com.provod.backend.model.PlaceOwner;
 import com.provod.backend.model.User;
+import com.provod.backend.repository.jpa.EventRepository;
 import com.provod.backend.repository.jpa.PlaceOwnerRepository;
 import com.provod.backend.repository.jpa.PlaceRepository;
 import com.provod.backend.service.ImageStorageService;
@@ -19,12 +20,14 @@ public class PlaceServiceImpl implements PlaceService
 {
     private final PlaceRepository placeRepository;
     private final PlaceOwnerRepository ownerRepository;
+    private final EventRepository eventRepository;
     private final ImageStorageService imageStorageService;
 
-    public PlaceServiceImpl(PlaceRepository placeRepository, PlaceOwnerRepository ownerRepository, ImageStorageService imageStorageService)
+    public PlaceServiceImpl(PlaceRepository placeRepository, PlaceOwnerRepository ownerRepository, EventRepository eventRepository, ImageStorageService imageStorageService)
     {
         this.placeRepository = placeRepository;
         this.ownerRepository = ownerRepository;
+        this.eventRepository = eventRepository;
         this.imageStorageService = imageStorageService;
     }
 
@@ -80,7 +83,9 @@ public class PlaceServiceImpl implements PlaceService
     @Override
     public Place getPlaceWithEvents(Long id)
     {
-        return placeRepository.findByIdWithEvents(id).orElseThrow(() -> new NoSuchElementException(id.toString()));
+        Place place = placeRepository.findById(id).orElseThrow(() -> new NoSuchElementException(id.toString()));
+        place.setEvents(eventRepository.findAllByPlace(place));
+        return place;
     }
 
     @Override
