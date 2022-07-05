@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/clubs")
+@CrossOrigin(origins = "*")
 public class PlaceController {
 
     private final PlaceService placeService;

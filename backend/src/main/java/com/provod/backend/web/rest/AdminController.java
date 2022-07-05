@@ -27,6 +27,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/admin")
+@CrossOrigin(origins = "*")
 public class AdminController {
 
     private final PlaceService placeService;

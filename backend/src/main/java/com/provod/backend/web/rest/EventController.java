@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/events")
+@CrossOrigin(origins = "*")
 public class EventController {
     private final EventService eventService;
     private final PlaceService placeService;
