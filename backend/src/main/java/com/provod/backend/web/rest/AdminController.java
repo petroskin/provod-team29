@@ -56,17 +56,16 @@ public class AdminController {
     }
 
     @PostMapping("/place")
-    public ResponseEntity<Place> addPlace(@RequestBody PlaceDTO place) {
-        Place ret = placeService.createPlace(place.getName(),
-                                             place.getDescription(),
-                                             place.getAddress(),
-                                             place.getCity(),
-                                             place.getLatitude(),
-                                             place.getLongitude(),
-                                             place.getStandardCapacity(),
-                                             place.getVipCapacity(),
-                                   null);
-
+    public ResponseEntity<Place> addPlace(@RequestParam String name,
+                                          @RequestParam String description,
+                                          @RequestParam String address,
+                                          @RequestParam String city,
+                                          @RequestParam Double latitude,
+                                          @RequestParam Double longitude,
+                                          @RequestParam Integer standardCapacity,
+                                          @RequestParam Integer vipCapacity,
+                                          @RequestPart(required = false) MultipartFile image) {
+        Place ret = placeService.createPlace(name, description, address, city, latitude, longitude, standardCapacity, vipCapacity, image);
         return ret != null ? ResponseEntity.ok(ret) : ResponseEntity.internalServerError().build();
     }
 
@@ -118,7 +117,7 @@ public class AdminController {
             @PathVariable Long id,
             @RequestParam String start,
             @RequestParam Long placeId,
-            @RequestPart(name = "image", required = false) MultipartFile image) {
+            @RequestPart(required = false) MultipartFile image) {
         if (placeId == null || start == null) {
             return ResponseEntity.badRequest().build();
         }

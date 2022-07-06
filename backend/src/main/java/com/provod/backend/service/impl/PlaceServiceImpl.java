@@ -37,7 +37,7 @@ public class PlaceServiceImpl implements PlaceService
                              Integer vipCapacity,
                              MultipartFile placePoster)
     {
-        Place place = new Place(name, description, address, city, latitude, longitude, standardCapacity, vipCapacity);
+        Place place = placeRepository.save(new Place(name, description, address, city, latitude, longitude, standardCapacity, vipCapacity));
         if (placePoster != null) {
             try {
                 imageStorageService.saveNewPlaceImage(placePoster, place.getId());
@@ -46,7 +46,7 @@ public class PlaceServiceImpl implements PlaceService
                 // ne bi trebalo da se desi
             }
         }
-        return placeRepository.save(place);
+        return place;
     }
 
     @Override

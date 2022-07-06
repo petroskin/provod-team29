@@ -42,7 +42,8 @@ public class EventController {
     public ResponseEntity<EventDTO> createEvent(
             @RequestParam String start,
             @RequestParam Long placeId,
-            @RequestPart(name = "image", required = false) MultipartFile image) {
+            @RequestPart(required = false) MultipartFile image) {
+        System.out.println(image);
         if (placeId == null || start == null) {
             return ResponseEntity.badRequest().build();
         }

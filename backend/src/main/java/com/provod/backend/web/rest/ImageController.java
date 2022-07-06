@@ -21,7 +21,7 @@ public class ImageController {
             file = imageStorageService.loadEvent(eventId);
         }
         catch (RuntimeException ignored){
-            file = imageStorageService.loadEventPlaceholder();
+            file = imageStorageService.loadPlaceholder();
         }
         return ResponseEntity.ok()
                              .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);
@@ -34,7 +34,7 @@ public class ImageController {
             file = imageStorageService.loadPlace(placeId);
         }
         catch (RuntimeException ignored){
-            file = imageStorageService.loadPlacePlaceholder();
+            file = imageStorageService.loadPlaceholder();
         }
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"").body(file);

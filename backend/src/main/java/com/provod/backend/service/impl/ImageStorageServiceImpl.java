@@ -25,6 +25,7 @@ public class ImageStorageServiceImpl implements ImageStorageService
 {
     private final Path eventRoot = Paths.get("images", "event");
     private final Path placeRoot = Paths.get("images", "place");
+    private final Path imagesRoot = Paths.get("images");
 
     @Override
     public void init()
@@ -45,11 +46,6 @@ public class ImageStorageServiceImpl implements ImageStorageService
     @Override
     public void saveNewEventImage(MultipartFile file, Long eventId) throws IOException
     {
-        File imageDir = new File(String.valueOf(this.eventRoot.resolve(eventId.toString())));
-        if (!Files.exists(imageDir.toPath()))
-        {
-            Files.createDirectory(imageDir.toPath());
-        }
         BufferedImage image = ImageIO.read(file.getInputStream());
 
         //maksimum rezolucija za slika shto se chuva da e 1000 pikseli za podolgata strana
@@ -99,11 +95,6 @@ public class ImageStorageServiceImpl implements ImageStorageService
     @Override
     public void saveNewPlaceImage(MultipartFile file, Long placeId) throws IOException
     {
-        File imageDir = new File(String.valueOf(this.placeRoot.resolve(placeId.toString())));
-        if (!Files.exists(imageDir.toPath()))
-        {
-            Files.createDirectory(imageDir.toPath());
-        }
         BufferedImage image = ImageIO.read(file.getInputStream());
 
         //maksimum rezolucija za slika shto se chuva da e 1000 pikseli za podolgata strana
@@ -151,34 +142,11 @@ public class ImageStorageServiceImpl implements ImageStorageService
     }
 
     @Override
-    public Resource loadEventPlaceholder()
+    public Resource loadPlaceholder()
     {
         try
         {
-            Path file = eventRoot.resolve("placeholder.jpg");
-            Resource resource = new UrlResource(file.toUri());
-
-            if (resource.exists() || resource.isReadable())
-            {
-                return resource;
-            }
-            else
-            {
-                throw new RuntimeException("Could not read the file!");
-            }
-        }
-        catch (MalformedURLException e)
-        {
-            throw new RuntimeException("Error: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public Resource loadPlacePlaceholder()
-    {
-        try
-        {
-            Path file = placeRoot.resolve("placeholder.jpg");
+            Path file = imagesRoot.resolve("placeholder.jpg");
             Resource resource = new UrlResource(file.toUri());
 
             if (resource.exists() || resource.isReadable())

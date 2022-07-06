@@ -16,7 +16,5 @@ public interface ImageStorageService {
 
     public Resource loadPlace(Long placeId);
 
-    public Resource loadEventPlaceholder();
-
-    public Resource loadPlacePlaceholder();
+    public Resource loadPlaceholder();
 }
